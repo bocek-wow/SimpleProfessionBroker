@@ -1,13 +1,10 @@
-local addonName,  addon = ...
+local addonName = ...
 
 local playerName = UnitName("player")
 local config = {}
 local menu = {}
 local defaultProfession = {}
 local f = CreateFrame("Frame", addonName, UIParent, "UIDropDownMenuTemplate")
-
-local BrokerOnEnter, BrokerOnEnter, UpdateBroker, BrokerMenuOnClick
-local GetPlayerProfessions, OpenProfession, SetDefaultProfession
 
 function PrintTable (tt, indent, done)
     done = done or {}
@@ -34,7 +31,7 @@ function PrintTable (tt, indent, done)
       return tt .. "\n"
     end
 end
-  
+
 function TableToString(tbl)
     if "nil" == type(tbl) then
         return tostring(nil)
@@ -51,7 +48,6 @@ local function OpenProfession(skillName, skillLine)
     if skillName == "Archaeology" then
         CastSpellByName(skillName)
     else
-        TradeSkillFrame_LoadUI()
         if C_TradeSkillUI.GetTradeSkillLine() ~= nil then
             C_TradeSkillUI.CloseTradeSkill()
         else
@@ -75,15 +71,15 @@ local function BrokerOnEnter(frame)
     local a1 = (showBelow and "TOP") or "BOTTOM"
     local a2 = (showBelow and "BOTTOM") or "TOP"
 
-    UIDropDownMenu_SetAnchor(f, 0, 0, a1, frame, a2) 
+    UIDropDownMenu_SetAnchor(f, 0, 0, a1, frame, a2)
     EasyMenu(menu, f, nil, nil, nil, "MENU")
 end
 
-local function BrokerOnClick(frame)
+local function BrokerOnClick()
     OpenProfession(defaultProfession.name, defaultProfession.skillLine)
     UpdateBroker(defaultProfession.name, defaultProfession.icon)
     SetDefaultProfession(defaultProfession)
-end 
+end
 
 f.broker = LibStub("LibDataBroker-1.1"):NewDataObject(addonName, {
 	type = "data source",
