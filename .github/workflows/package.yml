@@ -21,7 +21,7 @@ jobs:
           fetch-depth: 100
 
       - name: Install and run Luacheck
-        uses: nebularg/actions-luacheck@v1.1
+        uses: nebularg/actions-luacheck@v1.1.0
         with:
           args: "--no-color -q"
 
