@@ -1,0 +1,9 @@
+## Interface: 90001
+## Version: @project-version@
+## Title : SimpleProfessionBroker
+## Notes: Open profession windows
+## Author: Bocek
+## SavedVariables: SimpleProfessionBrokerDB
+
+embeds.xml
+main.xml

@@ -1,0 +1,13 @@
+package-as: SimpleProfessionBroker
+
+externals:
+    SimpleProfessionBroker/libs/CallbackHandler-1.0: https://repos.wowace.com/wow/callbackhandler/trunk/CallbackHandler-1.0
+    SimpleProfessionBroker/libs/LibDataBroker-1.1: https://github.com/tekkub/libdatabroker-1-1
+    SimpleProfessionBroker/libs/LibStub: https://repos.wowace.com/wow/libstub/trunk
+
+license-output: LICENSE.txt
+
+enable-nolib-creation: no
+
+move-folders:
+    SimpleProfessionBroker/SimpleProfessionBroker: SimpleProfessionBroker
