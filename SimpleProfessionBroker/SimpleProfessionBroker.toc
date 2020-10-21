@@ -5,5 +5,7 @@
 ## Author: Bocek
 ## SavedVariables: SimpleProfessionBrokerDB
 
+## X-Curse-Project-ID: 413975
+
 embeds.xml
 main.xml
