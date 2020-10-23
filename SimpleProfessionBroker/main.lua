@@ -5,6 +5,7 @@ local config = {}
 local menu = {}
 local defaultProfession = {}
 local f = CreateFrame("Frame", addonName, UIParent, "UIDropDownMenuTemplate")
+local hasProfessions = true
 
 function PrintTable (tt, indent, done)
     done = done or {}
@@ -62,23 +63,31 @@ local function SetDefaultProfession(profession)
 end
 
 local function UpdateBroker(skillName, icon)
-    f.broker.text = skillName
-    f.broker.icon = icon
+    if hasProfessions then
+        f.broker.text = skillName
+        f.broker.icon = icon
+    else
+        f.broker.text = "Professions: None"
+    end
 end
 
 local function BrokerOnEnter(frame)
-    local showBelow = select(2, frame:GetCenter()) > UIParent:GetHeight() / 2
-    local a1 = (showBelow and "TOP") or "BOTTOM"
-    local a2 = (showBelow and "BOTTOM") or "TOP"
+    if hasProfessions then
+        local showBelow = select(2, frame:GetCenter()) > UIParent:GetHeight() / 2
+        local a1 = (showBelow and "TOP") or "BOTTOM"
+        local a2 = (showBelow and "BOTTOM") or "TOP"
 
-    UIDropDownMenu_SetAnchor(f, 0, 0, a1, frame, a2)
-    EasyMenu(menu, f, nil, nil, nil, "MENU")
+        UIDropDownMenu_SetAnchor(f, 0, 0, a1, frame, a2)
+        EasyMenu(menu, f, nil, nil, nil, "MENU")
+    end
 end
 
 local function BrokerOnClick()
-    OpenProfession(defaultProfession.name, defaultProfession.skillLine)
-    UpdateBroker(defaultProfession.name, defaultProfession.icon)
-    SetDefaultProfession(defaultProfession)
+    if hasProfessions then
+        OpenProfession(defaultProfession.name, defaultProfession.skillLine)
+        UpdateBroker(defaultProfession.name, defaultProfession.icon)
+        SetDefaultProfession(defaultProfession)
+    end
 end
 
 f.broker = LibStub("LibDataBroker-1.1"):NewDataObject(addonName, {
@@ -106,9 +115,11 @@ local function GetPlayerProfessions()
 end
 
 local function BrokerMenuOnClick(profession)
-    OpenProfession(profession.name, profession.skillLine)
-    UpdateBroker(profession.name, profession.icon)
-    SetDefaultProfession(profession)
+    if hasProfessions then
+        OpenProfession(profession.name, profession.skillLine)
+        UpdateBroker(profession.name, profession.icon)
+        SetDefaultProfession(profession)
+    end
 end
 
 f:SetScript("OnEvent", function()
@@ -128,9 +139,14 @@ f:SetScript("OnEvent", function()
         UpdateBroker(profession.name, profession.icon)
         SetDefaultProfession(profession)
     else
-        local profession = professionInfo[1]
-        UpdateBroker(profession.name, profession.icon)
-        SetDefaultProfession(profession)
+        if professionInfo[1] ~= nil then
+            local profession = professionInfo[1]
+            UpdateBroker(profession.name, profession.icon)
+            SetDefaultProfession(profession)
+        else
+            hasProfessions = false
+            UpdateBroker(nil, nil)
+        end
     end
 end)
 f:RegisterEvent("ADDON_LOADED")
