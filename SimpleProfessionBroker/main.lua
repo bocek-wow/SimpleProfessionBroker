@@ -45,12 +45,28 @@ function TableToString(tbl)
     end
 end
 
+local function CreateTable(...)
+    local t = {}
+    for i = 1, select('#', ...) do
+        local v = select(i, ...)
+        if v ~= nil then
+            table.insert(t, v)
+        end
+    end
+    return t
+end
+
 local function OpenProfession(skillName, skillLine)
     if skillName == "Archaeology" then
         CastSpellByName(skillName)
     else
-        if C_TradeSkillUI.GetTradeSkillLine() ~= nil then
-            C_TradeSkillUI.CloseTradeSkill()
+        local _, _, _, _, _, open = C_TradeSkillUI.GetTradeSkillLine()
+        if open ~= nil then
+            if open == skillLine then
+                C_TradeSkillUI.CloseTradeSkill()
+            else
+                C_TradeSkillUI.OpenTradeSkill(skillLine)
+            end
         else
             C_TradeSkillUI.OpenTradeSkill(skillLine)
         end
@@ -100,15 +116,15 @@ f.broker = LibStub("LibDataBroker-1.1"):NewDataObject(addonName, {
 
 local function GetPlayerProfessions()
     local professionInfo = {}
-    local professions = {GetProfessions()}
+    local professions = CreateTable(GetProfessions())
 
-    for i, id in pairs(professions) do
+    for _, id in pairs(professions) do
         local name, icon, _, _, _, _, skillLine = GetProfessionInfo(id)
         local profession = {}
         profession["name"] = name
         profession["icon"] = icon
         profession["skillLine"] = skillLine
-        professionInfo[i] = profession
+        table.insert(professionInfo, profession)
     end
 
     return professionInfo
@@ -122,16 +138,16 @@ local function BrokerMenuOnClick(profession)
     end
 end
 
-f:SetScript("OnEvent", function()
+local function Setup()
     SimpleProfessionBrokerDB = SimpleProfessionBrokerDB or {}
     config = SimpleProfessionBrokerDB
 
     local professionInfo = GetPlayerProfessions()
 
-    menu[1] = {text = "Professions", isTitle = true, notCheckable = true}
+    table.insert(menu, {text = "Professions", isTitle = true, notCheckable = true})
     for i, profession in pairs(professionInfo) do
         local menuList = {icon = profession.icon, text = profession.name, func = function() BrokerMenuOnClick(profession) end, notCheckable = true}
-        menu[i+1] = menuList
+        table.insert(menu, menuList)
     end
 
     if config[playerName] ~= nil then
@@ -147,6 +163,14 @@ f:SetScript("OnEvent", function()
             hasProfessions = false
             UpdateBroker(nil, nil)
         end
+    end
+end
+
+f:SetScript("OnEvent", function(self, event, ...)
+    if event == "ADDON_LOADED" and ... == addonName  then
+        Setup()
+        f:UnregisterEvent("ADDON_LOADED")
+        self.ADDON_LOADED = nil
     end
 end)
 f:RegisterEvent("ADDON_LOADED")
