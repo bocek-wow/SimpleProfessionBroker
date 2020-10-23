@@ -145,7 +145,7 @@ local function Setup()
     local professionInfo = GetPlayerProfessions()
 
     table.insert(menu, {text = "Professions", isTitle = true, notCheckable = true})
-    for i, profession in pairs(professionInfo) do
+    for _, profession in pairs(professionInfo) do
         local menuList = {icon = profession.icon, text = profession.name, func = function() BrokerMenuOnClick(profession) end, notCheckable = true}
         table.insert(menu, menuList)
     end
